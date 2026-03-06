@@ -1,7 +1,8 @@
 // hooks/useReservations.js
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { genId, getTodayStr } from "../utils/constants";
 
+// 1. 예약 관리 로직 (useReservations)
 export function useReservations() {
   const [reservations, setReservations] = useState(() => {
     try {
@@ -26,7 +27,6 @@ export function useReservations() {
     };
     persist((prev) => {
       const next = [rec, ...prev];
-      // avoid stale closure — use functional update
       localStorage.setItem("gf_reservations", JSON.stringify(next));
       return next;
     });
@@ -49,7 +49,6 @@ export function useReservations() {
     });
   }, [persist]);
 
-  // 특정 날짜·방갈로의 예약된 시간 조회
   const getBookedHours = useCallback((date, bungalowId) => {
     return reservations
       .filter((r) => r.date === date && r.bungalowId === bungalowId && r.status !== "cancelled")
@@ -59,9 +58,8 @@ export function useReservations() {
   return { reservations, addReservation, updateStatus, deleteReservation, getBookedHours };
 }
 
-// hooks/useWindowWidth.js
-import { useState, useEffect } from "react";
-
+// 2. 화면 너비 체크 로직 (useWindowWidth)
+// 중복되었던 import 구문을 상단으로 합쳐서 에러를 해결했습니다.
 export function useWindowWidth() {
   const [w, setW] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth : 768
